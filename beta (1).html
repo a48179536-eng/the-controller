@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Controller — Beta 0.1</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #070a0e;
+            color: #f2f5f7;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        header {
+            height: 65px;
+            background: #0b1015;
+            border-bottom: 1px solid #27313b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+       .logo {
+           text-decoration: none;
+           color: #f2f5f7;
+           display: flex;
+           align-items: center;
+           gap: 10px;
+           font-weight: bold;
+           letter-spacing: 2px;
+           cursor: pointer;
+}
+
+.logo:hover {
+    color: #39d98a;
+}
+
+        .logo-box {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 1px solid #39d98a;
+            color: #39d98a;
+            font-size: 11px;
+        }
+
+        .beta {
+            color: #39d98a;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* BETA WARNING */
+
+.beta-warning {
+    background: #10161d;
+    border-bottom: 1px solid #39d98a;
+    padding: 14px 25px;
+    color: #89949e;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.beta-warning strong {
+    color: #39d98a;
+    letter-spacing: 1px;
+}
+        
+        /* MAIN */
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            height: calc(100vh - 65px);
+        }
+
+        .panel {
+            background: #10161d;
+            border-right: 1px solid #27313b;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            border-right: none;
+            border-left: 1px solid #27313b;
+        }
+
+        .panel-title {
+            color: #89949e;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        /* CALLS */
+
+        .call {
+            background: #070a0e;
+            border: 1px solid #27313b;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .call:hover {
+            border-color: #39d98a;
+        }
+
+        .call.active {
+            border-color: #ff5360;
+        }
+
+        .call-type {
+            color: #ff5360;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .call-location {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .call-description {
+            color: #89949e;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* MAP */
+
+        .map {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    35deg,
+                    transparent 48%,
+                    #ffffff 49%,
+                    #ffffff 52%,
+                    transparent 53%
+                ),
+                linear-gradient(
+                    -35deg,
+                    transparent 48%,
+                    #ffffff 49%,
+                    #ffffff 52%,
+                    transparent 53%
+                ),
+                #cfd6d9;
+        }
+
+        .road {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #aeb7bc;
+        }
+
+        .road.one {
+            width: 120%;
+            height: 55px;
+            top: 40%;
+            left: -10%;
+            transform: rotate(-18deg);
+        }
+
+        .road.two {
+            width: 90%;
+            height: 45px;
+            top: 10%;
+            left: 25%;
+            transform: rotate(70deg);
+        }
+
+        .road.three {
+            width: 100%;
+            height: 45px;
+            top: 70%;
+            left: -20%;
+            transform: rotate(22deg);
+        }
+
+        .incident {
+            position: absolute;
+            top: 45%;
+            left: 55%;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ff5360;
+            color: white;
+            display: grid;
+            place-items: center;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 83, 96, 0.7);
+        }
+
+        .unit {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #39d98a;
+            box-shadow: 0 0 15px rgba(57, 217, 138, 0.8);
+        }
+
+        .unit.one {
+            top: 30%;
+            left: 25%;
+        }
+
+        .unit.two {
+            top: 65%;
+            left: 70%;
+        }
+
+        /* UNITS */
+
+        .unit-card {
+            background: #070a0e;
+            border: 1px solid #27313b;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .unit-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .unit-status {
+            color: #39d98a;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* BOTTOM */
+
+        .status {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10161d;
+            border: 1px solid #27313b;
+            padding: 12px 20px;
+            font-size: 12px;
+            color: #89949e;
+        }
+
+        /* BUTTON */
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 10px;
+            border: 1px solid #39d98a;
+            background: #39d98a;
+            color: #06110b;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .panel,
+            .right-panel {
+                border: none;
+                border-bottom: 1px solid #27313b;
+            }
+
+            .map {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <a href="index.html" class="logo">
+    <div class="logo-box">TC</div>
+    THE CONTROLLER
+</a>
+
+    <div class="beta">
+        ● BETA 0.1
+    </div>
+
+</header>
+
+<div class="beta-warning">
+    ⚠️ <strong>BETA WARNING</strong><br>
+    The Controller is currently in early beta development.
+    Expect bugs, unfinished systems, and things that may not work correctly.
+    New features and improvements are actively being developed.
+    Thanks for testing!
+</div>
+
+<div class="dashboard">
+
+    <!-- CALLS -->
+
+    <aside class="panel">
+
+        <div class="panel-title">
+            ACTIVE CALLS
+        </div>
+
+        <div class="call active">
+
+            <div class="call-type">
+                PRIORITY 1
+            </div>
+
+            <div class="call-location">
+                MONEYMORE
+            </div>
+
+            <div class="call-description">
+                Reports of a road traffic collision.
+                Injuries unknown.
+            </div>
+
+            <button onclick="dispatchUnit()">
+                DISPATCH UNIT
+            </button>
+
+        </div>
+
+        <div class="call">
+
+            <div class="call-type">
+                PRIORITY 2
+            </div>
+
+            <div class="call-location">
+                COOKSTOWN
+            </div>
+
+            <div class="call-description">
+                Suspicious activity reported
+                near a commercial building.
+            </div>
+
+        </div>
+
+    </aside>
+
+    <!-- MAP -->
+
+    <main class="map">
+
+        <div class="road one"></div>
+        <div class="road two"></div>
+        <div class="road three"></div>
+
+        <div class="incident">
+            !
+        </div>
+
+        <div class="unit one"></div>
+        <div class="unit two"></div>
+
+        <div class="status" id="status">
+            SYSTEM READY — AWAITING DISPATCH
+        </div>
+
+    </main>
+
+    <!-- UNITS -->
+
+    <aside class="panel right-panel">
+
+        <div class="panel-title">
+            RESPONSE UNITS
+        </div>
+
+        <div class="unit-card">
+
+            <div class="unit-name">
+                LPU-01
+            </div>
+
+            <div class="unit-status">
+                ● AVAILABLE
+            </div>
+
+        </div>
+
+        <div class="unit-card">
+
+            <div class="unit-name">
+                RPU-02
+            </div>
+
+            <div class="unit-status">
+                ● AVAILABLE
+            </div>
+
+        </div>
+
+        <div class="unit-card">
+
+            <div class="unit-name">
+                LPU-03
+            </div>
+
+            <div class="unit-status">
+                ● AVAILABLE
+            </div>
+
+        </div>
+
+    </aside>
+
+</div>
+
+<script>
+
+function dispatchUnit() {
+
+    const status = document.getElementById("status");
+
+    status.textContent =
+        "LPU-01 DISPATCHED TO MONEYMORE";
+
+    setTimeout(function() {
+
+        status.textContent =
+            "UNIT EN ROUTE — ETA 04:32";
+
+    }, 2000);
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Controller</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #070a0e;
+            color: #f2f5f7;
+            font-family: Arial, sans-serif;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            height: 70px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0b1015;
+            border-bottom: 1px solid #27313b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .logo-box {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 1px solid #39d98a;
+            color: #39d98a;
+            font-size: 11px;
+        }
+
+        .logo small {
+            display: block;
+            color: #89949e;
+            font-size: 8px;
+            letter-spacing: 1px;
+            margin-top: 3px;
+        }
+
+        nav a {
+            color: #9aa5af;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        .beta-nav {
+            color: #39d98a !important;
+            border: 1px solid #39d98a;
+            padding: 9px 14px;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 720px;
+            padding: 100px 8%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 7px 11px;
+            border: 1px solid #27313b;
+            background: #10161d;
+            color: #9aa5af;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .badge span {
+            color: #39d98a;
+        }
+
+        h1 {
+            font-size: clamp(50px, 6vw, 85px);
+            line-height: 0.95;
+            margin: 25px 0;
+            letter-spacing: -4px;
+        }
+
+        h1 strong {
+            color: #39d98a;
+        }
+
+        .hero p {
+            max-width: 600px;
+            color: #89949e;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 14px 20px;
+            border: 1px solid #27313b;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .primary {
+            background: #39d98a;
+            color: #06110b;
+            border-color: #39d98a;
+        }
+
+        .primary:hover {
+            opacity: 0.85;
+        }
+
+        /* CONTROL ROOM PREVIEW */
+
+        .preview {
+            background: #10161d;
+            border: 1px solid #27313b;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .preview-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #27313b;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .online {
+            color: #39d98a;
+        }
+
+        .map {
+            height: 390px;
+            position: relative;
+            background:
+                linear-gradient(
+                    35deg,
+                    transparent 48%,
+                    #ffffff 49%,
+                    #ffffff 52%,
+                    transparent 53%
+                ),
+                linear-gradient(
+                    -35deg,
+                    transparent 48%,
+                    #ffffff 49%,
+                    #ffffff 52%,
+                    transparent 53%
+                ),
+                #cfd6d9;
+            overflow: hidden;
+        }
+
+        .road {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #aeb7bc;
+        }
+
+        .road.one {
+            width: 120%;
+            height: 45px;
+            top: 45%;
+            left: -10%;
+            transform: rotate(-18deg);
+        }
+
+        .road.two {
+            width: 80%;
+            height: 40px;
+            top: 10%;
+            left: 20%;
+            transform: rotate(70deg);
+        }
+
+        .road.three {
+            width: 90%;
+            height: 38px;
+            top: 70%;
+            left: -20%;
+            transform: rotate(22deg);
+        }
+
+        .incident {
+            position: absolute;
+            top: 48%;
+            left: 55%;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ff5360;
+            display: grid;
+            place-items: center;
+            font-weight: bold;
+        }
+
+        .unit {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #39d98a;
+            box-shadow: 0 0 12px rgba(57, 217, 138, 0.6);
+        }
+
+        .unit.one {
+            top: 32%;
+            left: 30%;
+        }
+
+        .unit.two {
+            top: 62%;
+            left: 68%;
+        }
+
+        .preview-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            border-top: 1px solid #27313b;
+            color: #89949e;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* SECTIONS */
+
+        section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 90px 25px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .section-number {
+            color: #39d98a;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            font-size: 38px;
+            letter-spacing: -1px;
+        }
+
+        /* FEATURES */
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .feature {
+            background: #10161d;
+            border: 1px solid #27313b;
+            padding: 25px;
+            min-height: 210px;
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 1px solid #39d98a;
+            color: #39d98a;
+            margin-bottom: 25px;
+        }
+
+        .feature h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .feature p {
+            color: #89949e;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* DEVELOPMENT */
+
+        .development-box {
+            background: #10161d;
+            border: 1px solid #27313b;
+            padding: 30px;
+        }
+
+        .development-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .version {
+            color: #89949e;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .version-number {
+            color: #39d98a;
+        }
+
+        .percentage {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            height: 6px;
+            background: #070a0e;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 35%;
+            height: 100%;
+            background: #39d98a;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 12px;
+        }
+
+        .checklist div {
+            color: #89949e;
+            font-size: 14px;
+        }
+
+        .checklist .complete {
+            color: #39d98a;
+        }
+
+        /* COMMUNITY */
+
+        .community {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .community-box {
+            background: #10161d;
+            border: 1px solid #27313b;
+            padding: 30px;
+        }
+
+        .community-box h3 {
+            font-size: 24px;
+            margin: 20px 0 10px;
+        }
+
+        .community-box p {
+            color: #89949e;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .community-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .community-form input,
+        .community-form textarea {
+            width: 100%;
+            padding: 13px;
+            background: #070a0e;
+            border: 1px solid #27313b;
+            color: white;
+            font-family: Arial, sans-serif;
+            outline: none;
+        }
+
+        .community-form input:focus,
+        .community-form textarea:focus {
+            border-color: #39d98a;
+        }
+
+        .community-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .community-form button {
+            width: fit-content;
+        }
+
+        /* BETA */
+
+        .beta-section {
+            text-align: center;
+            background: #10161d;
+            border-top: 1px solid #27313b;
+            border-bottom: 1px solid #27313b;
+            max-width: none;
+        }
+
+        .beta-section p {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: #89949e;
+            line-height: 1.6;
+        }
+
+        /* UPDATES */
+
+        .update {
+            border-left: 2px solid #39d98a;
+            padding: 5px 0 5px 25px;
+            margin-bottom: 30px;
+        }
+
+        .date {
+            color: #39d98a;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .update p {
+            color: #89949e;
+            line-height: 1.6;
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid #27313b;
+            padding: 30px 25px;
+            text-align: center;
+            color: #89949e;
+            font-size: 12px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .community {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 20px;
+            }
+
+            nav a {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            h2 {
+                font-size: 30px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-footer {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            section {
+                padding: 65px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <div class="logo-box">TC</div>
+
+            <div>
+                <strong>THE CONTROLLER</strong>
+                <small>EMERGENCY DISPATCH SYSTEM</small>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#development">Development</a>
+            <a href="#community">Community</a>
+            <a href="#updates">Updates</a>
+            <a href="#beta" class="beta-nav">Play Beta →</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+
+        <div>
+            <div class="badge">
+                <span>●</span>
+                CURRENTLY IN DEVELOPMENT
+            </div>
+
+            <h1>
+                Emergency dispatch.<br>
+                <strong>Your decisions.</strong>
+            </h1>
+
+            <p>
+                The Controller is an emergency dispatch and control-room
+                simulator where every call, decision and response is in your hands.
+            </p>
+
+            <div class="buttons">
+                <a href="#beta" class="button primary">
+                    PLAY THE BETA →
+                </a>
+
+                <a href="#features" class="button">
+                    EXPLORE TC
+                </a>
+            </div>
+        </div>
+
+        <div class="preview">
+
+            <div class="preview-header">
+                <span>LIVE SYSTEM</span>
+                <span class="online">● ONLINE</span>
+            </div>
+
+            <div class="map">
+                <div class="road one"></div>
+                <div class="road two"></div>
+                <div class="road three"></div>
+
+                <div class="incident">!</div>
+                <div class="unit one"></div>
+                <div class="unit two"></div>
+            </div>
+
+            <div class="preview-footer">
+                <span>LPU-01 / RESPONSE UNIT</span>
+                <span>RPU-02 / RESPONSE UNIT</span>
+                <span>ACTIVE CALLS 03</span>
+            </div>
+
+        </div>
+
+    </header>
+
+    <section id="features">
+
+        <div class="section-title">
+            <span class="section-number">01</span>
+            <h2>Built for the control room.</h2>
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+                <div class="feature-icon">!</div>
+                <h3>Dynamic incidents</h3>
+                <p>
+                    Calls develop dynamically, forcing you to react
+                    and make decisions as situations change.
+                </p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">⌁</div>
+                <h3>Real dispatching</h3>
+                <p>
+                    Manage emergency calls and decide which units
+                    should respond to each incident.
+                </p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">◎</div>
+                <h3>Live map</h3>
+                <p>
+                    Track incidents and response units across
+                    a constantly changing operational map.
+                </p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">▣</div>
+                <h3>Built everywhere</h3>
+                <p>
+                    Designed to eventually work across desktop,
+                    Chromebook, tablet and mobile devices.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="development">
+
+        <div class="section-title">
+            <span class="section-number">02</span>
+            <h2>Development status.</h2>
+        </div>
+
+        <div class="development-box">
+
+            <div class="development-top">
+                <div class="version">
+                    VERSION
+                    <span class="version-number">BETA 0.1</span>
+                </div>
+
+                <div class="percentage">35%</div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+
+            <div class="checklist">
+                <div class="complete">✓ Core interface</div>
+                <div class="complete">✓ Dispatch layout</div>
+                <div class="complete">✓ Live map concept</div>
+                <div>○ Incident system</div>
+                <div>○ Unit dispatching</div>
+                <div>○ Full beta release</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="community">
+
+        <div class="section-title">
+            <span class="section-number">03</span>
+            <h2>Help shape TC.</h2>
+        </div>
+
+        <div class="community">
+
+            <div class="community-box">
+
+                <div class="badge">
+                    <span>●</span>
+                    FEATURE REQUEST
+                </div>
+
+                <h3>Got an idea?</h3>
+
+                <p>
+                    Suggest a feature, mechanic or improvement
+                    you'd like to see in The Controller.
+                </p>
+
+                <form class="community-form">
+
+                    <input
+                        type="text"
+                        placeholder="Your name / username"
+                    >
+
+                    <input
+                        type="text"
+                        placeholder="Feature title"
+                        required
+                    >
+
+                    <textarea
+                        placeholder="Describe your idea..."
+                        required
+                    ></textarea>
+
+                    <button
+                        type="button"
+                        class="button primary"
+                        onclick="submitSuggestion()"
+                    >
+                        SUBMIT IDEA →
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="community-box">
+
+                <div class="badge">
+                    <span>●</span>
+                    CONTACT
+                </div>
+
+                <h3>Get in touch.</h3>
+
+                <p>
+                    Found a bug, have feedback or just want
+                    to get in contact about The Controller?
+                </p>
+
+                <form class="community-form">
+
+                    <input
+                        type="text"
+                        placeholder="Your name / username"
+                    >
+
+                    <input
+                        type="email"
+                        placeholder="Email address"
+                    >
+
+                    <textarea
+                        placeholder="Your message..."
+                        required
+                    ></textarea>
+
+                    <button
+                        type="button"
+                        class="button"
+                        onclick="contactDeveloper()"
+                    >
+                        SEND MESSAGE →
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="beta" class="beta-section">
+
+        <div class="badge">
+            <span>●</span>
+            BETA 0.1
+        </div>
+
+        <h2>Try the Controller.</h2>
+
+        <p>
+            Get an early look at The Controller while it is
+            still in development.
+        </p>
+
+        <button
+            class="button primary"
+            onclick="launchBeta()"
+        >
+            LAUNCH BETA →
+        </button>
+
+    </section>
+
+    <section id="updates">
+
+        <div class="section-title">
+            <span class="section-number">04</span>
+            <h2>Latest updates.</h2>
+        </div>
+
+        <div class="update">
+
+            <div class="date">29 SEP 2026</div>
+
+            <p>
+                Community feature requests and contact system
+                added to the TC website.
+            </p>
+
+        </div>
+
+        <div class="update">
+
+            <div class="date">29 SEP 2026</div>
+
+            <p>
+                The Controller website entered active development
+                with the first public beta planned.
+            </p>
+
+        </div>
+
+    </section>
+
+    <footer>
+        THE CONTROLLER © 2026 — CURRENTLY IN DEVELOPMENT
+    </footer>
+
+    <script>
+
+        function launchBeta() {
+            window.location.href = "beta.html";
+        }
+
+        function submitSuggestion() {
+            alert(
+                "THANK YOU! 💡\n\n" +
+                "Your feature suggestion has been received.\n\n" +
+                "The real submission system is coming soon."
+            );
+        }
+
+        function contactDeveloper() {
+            alert(
+                "MESSAGE READY 📩\n\n" +
+                "The Controller contact system is currently being built.\n\n" +
+                "A real contact system is coming soon."
+            );
+        }
+
+    </script>
+
+</body>
+</html>
